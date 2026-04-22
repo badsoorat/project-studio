@@ -99,16 +99,16 @@ Destination: `skill/` (working tree — edit target for F2+)
 - [x] `LICENSE` — MIT (matching upstream project-studio license)
 - [x] `.gitignore` — `dist/`, `.cowork/`, persona scratch, eval artifacts
 
-### F1.7 — Git + baseline tag  🔗 tracked against `SETUP.md` (host-side)
+### F1.7 — Git + baseline tag  ✅ closed 2026-04-22 15:12 Z
 
-*F1.7 does not gate F2 entry (plan §11: "T1+T2 green on main" is a release-time gate, not a phase-progression gate).*
+*Executed host-side via `SETUP.md` Steps 1-5. F1.7 was not a gate on F2 entry, but has now been retired so there is no dangling deferred work.*
 
-- [ ] `git init` in working tree — **broken `.git/` husk exists; must be removed first**
-- [ ] Initial commit of the scaffold
-- [ ] Tag `v3.1.0-baseline` on initial commit
-- [ ] **Human action (documented, not executed):** create GitHub repo `badsoorat/project-studio`
-- [ ] **Human action:** `git remote add origin … && git push -u origin main --tags`
-- [ ] **Human action:** enable branch protection on `main` (plan §8.2): require all 5 T-tier CI checks + 2 approvals
+- [x] `git init -b main` in working tree (broken `.git/` husk removed first)
+- [x] Initial commit of the scaffold — `f595811` (98 files)
+- [x] Tag `v3.1.0-baseline` on initial commit — tag object `6e782b5`
+- [x] **Human action:** GitHub repo `badsoorat/project-studio` created (public, via `gh repo create`)
+- [x] **Human action:** `origin` HTTPS remote added; `main` + tags pushed; follow-up cleanup commit `f9227c5` (stray `boot.md.tmp`) landed
+- [x] **Human action:** branch protection on `main` applied per **[ADR-0003](../upgrade-system/decisions/ADR-0003-branch-protection-solo-deviation.md)** (relaxed solo-dogfood variant: 5 T-tier checks required, 1 approval, `enforce_admins: false`; must revert to plan §8.2 at v3.2.0 release)
 
 </details>
 

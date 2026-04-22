@@ -5,7 +5,7 @@
 **Plan:** [`UPGRADE-SYSTEM-PLAN.md`](../UPGRADE-SYSTEM-PLAN.md) (v1.0, 2026-04-22)
 **Mode:** single-project (ratified in plan §1.4 — multi-module is explicitly forbidden)
 **Phase pointer:** `F2 — Atom enumeration` (entered 2026-04-22 14:36 Z)
-**Previous phase:** `F1 — Scaffold` (exited 2026-04-22 14:35 Z; F1.7 git steps deferred to host-side `SETUP.md`, not blocking per plan §11)
+**Previous phase:** `F1 — Scaffold` (exited 2026-04-22 14:35 Z; F1.7 git steps closed 2026-04-22 15:12 Z — commit `f595811`, tag `v3.1.0-baseline` (obj `6e782b5`), cleanup `f9227c5`, HTTPS remote to `badsoorat/project-studio`, branch protection applied per ADR-0003)
 **Session of record:** Session 2 — F1 cleanup + F2 entry
 **Session date:** 2026-04-22
 
@@ -16,7 +16,7 @@
 - **Runtime-of-record:** `anthropic-skills:project-studio` **v3.1.0** (installed skill driving this session)
 - **Edit target:** working tree under `skill/` and `upgrade-system/`
 - **Target version to ship:** `v3.2.0` (released at end of F5)
-- **Working-tree commit:** set at first commit (see `journal.md`)
+- **Working-tree commit:** `f9227c5` on `main` (tip); `v3.1.0-baseline` tag on `f595811` (see `journal.md`)
 
 Chief-of-staff must announce both version identities at each session start. Changes to `skill/` in the working tree are **not** picked up by this running session — they ship via F5, then the user re-installs.
 
@@ -49,7 +49,7 @@ Both surfaces are peers in one git history, gated by the same CI. All five perso
 
 ## Current phase — F2
 
-Plan §11 F2 entry conditions met: F1 in-tree scaffold complete; `resume project` validated in session 2; F1.7 host-side git steps deferred to `SETUP.md` (not blocking F2 per plan §11).
+Plan §11 F2 entry conditions met: F1 in-tree scaffold complete; `resume project` validated in session 2; **F1.7 host-side git now closed (2026-04-22 15:12 Z)** — repo live at `https://github.com/badsoorat/project-studio`, baseline tag pushed, CI all-green on first run, branch protection enforcing 5 T-tier checks (relaxed solo variant per [ADR-0003](../upgrade-system/decisions/ADR-0003-branch-protection-solo-deviation.md)).
 
 F2 deliverables in progress — see `tasks.md` for the live checklist.
 
@@ -78,7 +78,8 @@ None yet. Dissent is captured append-only (plan §6 + project-studio Invariant #
 - **defect-0001** (boot.md baseline truncation). Two installed v3.1.0 copies diverge — Linux-sandbox mount is 70 lines (truncated), Windows-plugin copy is 115 lines. Working tree restored to 115. Resolve in F2.1 (which is authoritative?).
 - **defect-0002** (boot.md L115 + dangling `PATTERN:reflexion-check` xref into `references/patterns.md` which does not define it). Text repaired in working tree; xref still dangles. Resolve in F2.7.
 - **Bash-mount blindness for `.github/`.** Windows Cowork mount intermittently hides host-side files from the Linux sandbox. Workaround: file-tool Read/Write. Log in F2 observability pass.
-- **F1.7 host-side git** (not a defect — waiting on user to execute `SETUP.md`).
+- **defect-0003** (PowerShell cp850 em-dash mangling). First `gh api PUT` of the branch-protection rule sent `"T1 ? lint"` context names to GitHub silently. Resolved in the second PUT via `\u2014` JSON escapes; verified code-point 8212 via `jq explode`. Future PowerShell + `gh api` calls with non-ASCII **must** use `\uXXXX` escapes or UTF-8-encoded `--input file`. See ledger + [ADR-0003](../upgrade-system/decisions/ADR-0003-branch-protection-solo-deviation.md).
+- **Branch-protection revert at v3.2.0.** ADR-0003 is a temporary deviation (1 approval, `enforce_admins: false`). F5 release checklist must revert to plan §8.2 values (2 approvals, `enforce_admins: true`) before the `v3.2.0` tag is pushed.
 
 ---
 
@@ -89,5 +90,6 @@ in parallel, Invariant #20) on the F2 atom-enumeration approach.
 Consolidate returns, surface any dissent, and present for approval
 before any file under `upgrade-system/architecture/atoms/` is created.
 
-Parallel host-side track (user-owned): run `SETUP.md` Steps 1-4 at
-any time to close F1.7. This is independent of F2 progression.
+Parallel host-side track: **closed.** F1.7 exited cleanly at 15:12 Z.
+SETUP.md has served its purpose — offer to delete it per its own
+self-instruction.

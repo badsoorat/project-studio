@@ -176,6 +176,123 @@ Carried-over open findings from F1 (for F2 to resolve):
   `references/patterns.md` — resolve by adding the pattern or rewriting
   the boot.md xref. Candidate atom in §2.3.0 references library.
 
+## 2026-04-22 14:45 Z — user + chief-of-staff — note
+Host-side SETUP.md Steps 1-2 executed by user:
+- `.git/` husk removed (PowerShell `Remove-Item -Recurse -Force .git`).
+- Clean `git init -b main`; `git config user.name/email`; `git add -A`;
+  initial commit **f595811de661eef6ba72b24c95f1f265efeb83b6** with
+  message *"F1 scaffold: .project-studio/, skill/ v3.1.0 baseline,
+  upgrade-system/, CI stubs, root docs"*; annotated tag
+  **v3.1.0-baseline** → tag object SHA
+  `6e782b5f54416e327af2a5e74d8ed4020743cd34`.
+- 98 files, 12292 insertions. CRLF warnings normal.
+Verified from sandbox via raw reads of `.git/refs/heads/main`,
+`.git/refs/tags/v3.1.0-baseline`, and `.git/logs/HEAD` (sandbox `git`
+cannot read `.git/config` through Windows ACLs; raw ref reads work).
+
+## 2026-04-22 14:50 Z — user + chief-of-staff — note
+Host-side SETUP.md Step 3:
+- Initial attempt: `gh repo create` failed — `gh` CLI not installed.
+- User ran `winget install --id GitHub.cli`; fresh PowerShell to
+  refresh PATH; `gh --version` = 2.90.0.
+- `gh auth login` via browser device code (HTTPS protocol for git
+  operations on this host — chosen over SSH given no existing key
+  infra on the Windows host).
+- `gh repo create badsoorat/project-studio --public --source=. --remote=origin --push`
+  → repo created, origin added, 109 objects pushed.
+- `git push --tags` → `v3.1.0-baseline` tag pushed (new tag).
+Verified from sandbox: `.git/refs/remotes/origin/main` = f595811...
+(exact match with local `main`).
+
+## 2026-04-22 14:55 Z — chief-of-staff — note
+Stray-file finding: `skill/protocol/boot.md.tmp` (13-byte leftover
+from the 2026-04-22 14:25 Z heredoc-based boot.md hotfix) was swept
+into the F1-scaffold commit by `git add -A` because `.gitignore` had
+no `*.tmp` rule. Chose to clean it up in a follow-up commit rather
+than amend.
+
+## 2026-04-22 14:57 Z — user — note
+Cleanup commit landed:
+- Appended `# Heredoc backup artifacts` + `*.tmp` to `.gitignore`.
+- `git rm --cached skill/protocol/boot.md.tmp` + `Remove-Item` on host.
+- Commit **f9227c5238ca2d3a9329f8cd4f283b3c1d47d86b** *"chore: drop
+  stray boot.md.tmp; ignore *.tmp"* pushed to origin/main.
+
+## 2026-04-22 15:00 Z — user + chief-of-staff — note
+CI first-run result: all six workflows that fired from the two pushes
+succeeded (`T1 — lint`, `T2 — structural`, `T3 — behavioral`,
+`T4 — integration`, `T5 — compat` on main + `release — Track A` on
+tag). Interpretation: `upgrade-system/evals/runner.py` is a skeleton
+that exits 0 cleanly when its tier directories are empty — exactly
+the no-op pass we expect pre-F4. The important side-effect: the five
+T-tier check context names are now registered with GitHub and can be
+referenced from branch protection.
+
+## 2026-04-22 15:05 Z — chief-of-staff — decision
+Branch-protection parameters (SETUP.md Step 4): user chose **(B) — the
+relaxed-for-solo-dogfood variant**. See ADR-0003 for full rationale and
+the hard revert criteria at v3.2.0 release cut. Values applied:
+- `required_status_checks.contexts`: `[T1 — lint, T2 — structural,
+  T3 — behavioral, T4 — integration, T5 — compat]`, `strict: true`.
+- `required_approving_review_count: 1`.
+- `enforce_admins: false`.
+- `dismiss_stale_reviews: true`.
+- `allow_force_pushes: false`; `allow_deletions: false`.
+
+## 2026-04-22 15:08 Z — user — block + unblock
+First `gh api ... PUT` sent em-dashes from a PowerShell here-string.
+PowerShell 5.1's cp850 I/O code page mangled U+2014 on the wire;
+GitHub silently accepted five garbage context names (`T1 ? lint`,
+etc.) that would never match any workflow report. Rule was created
+but **load-bearing-wrong** — any future PR would be blocked forever
+waiting for checks that don't exist. Diagnosed from GitHub's echo
+showing `"T1 ? lint"` verbatim. Logged as ledger defect-0003.
+
+## 2026-04-22 15:10 Z — user + chief-of-staff — note
+Re-PUT branch protection with `\u2014` JSON escapes (ASCII on the
+wire; JSON parsers MUST decode to U+2014). GitHub response now
+correctly shows `"T1 — lint"` etc. Verified by
+`gh api ... --jq '.contexts[0] | explode'` returning the code-point
+array `[84, 49, 32, 8212, 32, 108, 105, 110, 116]` — confirming
+position 3 is U+2014 em-dash. Earlier PowerShell cast showed 212
+because `[Console]::OutputEncoding` was cp850 where UTF-8 byte
+`0xE2` decodes to U+00D4 (`Ô` = 212) — a PowerShell stream-capture
+artifact, not a server-side problem.
+
+## 2026-04-22 15:12 Z — chief-of-staff — phase-exit
+F1.7 — Git + baseline tag closed.
+
+All six F1.7 checkboxes satisfied:
+- `git init` in working tree ✓ (clean, after SETUP.md Step 1 husk removal)
+- Initial commit of the scaffold ✓ (f595811)
+- Tag `v3.1.0-baseline` on initial commit ✓ (annotated)
+- GitHub repo `badsoorat/project-studio` created ✓
+- `origin` remote added + `main` + tags pushed ✓
+- Branch protection on `main` ✓ (per ADR-0003, reverts to §8.2 at v3.2.0)
+
+All F1 exit criteria (plan §11) now met:
+- T1+T2 green on `main` after baseline import ✓ (first CI run, 2026-04-22 15:00 Z)
+- `.project-studio/` present with team announced ✓
+- `resume project` works in a fresh session ✓
+
+F1 is **fully closed**. F2 gate (Tier-1 plan-critique, Invariant #20)
+remains the next action on the next user turn.
+
+## 2026-04-22 15:18 Z — chief-of-staff — note
+SETUP.md removed from working tree per its own self-instruction
+(line 94: "After you've finished Step 5, you can delete this file").
+Deletion executed in sandbox after `allow_cowork_file_delete` grant
+(Windows-mount ACLs otherwise block sandbox writes that aren't
+creates). Host-side stage + commit + push handed to the user:
+
+    git add -A
+    git commit -m "chore: remove SETUP.md (one-time bootstrap doc; F1.7 closed)"
+    git push
+
+No residual reference to SETUP.md remains in `.project-studio/` state
+(journal, ledger, tasks, state.md) other than the F1.7-closeout rows
+that record its historical role.
+
 <!--
 Future entries append below this line. Do not edit entries above.
 The file can grow indefinitely; older entries may be rotated into
