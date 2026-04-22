@@ -1,0 +1,49 @@
+# Track A — project-studio skill release.
+# Builds project-studio-v<x.y.z>.skill from skill/ contents.
+# Gated: ALL five T-tiers must have passed on the tagged commit.
+# Plan §1.2, §8.2.
+
+name: release — Track A (project-studio skill)
+
+on:
+  push:
+    tags:
+      - "v*.*.*"                  # e.g. v3.2.0
+      - "!v*.*.*-upgrade-workspace-*"
+
+jobs:
+  build-track-a:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify 5-tier gate
+        run: |
+          # Re-run all five tiers against the tagged commit as a final gate.
+          # This is defence in depth — CI already blocked merges without them.
+          pip install pyyaml jsonschema
+          python upgrade-system/evals/runner.py --tier all
+
+      - name: Build .skill bundle
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          BUNDLE="dist/project-studio-v${VERSION}.skill"
+          mkdir -p dist
+          # .skill is a tarball of the skill/ directory.
+          tar --exclude='.DS_Store' \
+              -czf "${BUNDLE}" \
+              -C skill .
+          ls -la dist/
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-studio-skill
+          path: dist/project-studio-v*.skill

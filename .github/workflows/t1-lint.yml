@@ -1,0 +1,31 @@
+# T1 — Lint tier.
+# Plan §3. Fast, cheap, always runs. Runs xref_check + schema validation +
+# file-structure invariants. Required check on `main` per plan §8.2.
+
+name: T1 — lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  t1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml jsonschema
+
+      - name: Run T1 lint tier
+        run: |
+          python upgrade-system/evals/runner.py --tier T1

@@ -1,0 +1,54 @@
+# Module: {{MODULE_NAME}}
+
+## Identity
+
+- **Name:** {{MODULE_NAME}}
+- **Type:** {{website | web app | mobile app | API | desktop app | other}}
+- **Status:** {{live | staging | planned}}
+- **URL:** {{PRODUCTION_URL_OR_PLANNED}}
+- **Repo:** {{REPO_URL_OR_MONOREPO_PATH}}
+- **Stack:** {{FRAMEWORK}}, {{LANGUAGE}}, {{KEY_LIBRARIES}}
+- **Hosting:** {{HOSTING_PLATFORM}}
+
+## Status: Planned (include only if status is "planned")
+
+> This module is not yet built or deployed. The details below describe what is planned.
+>
+> **Why it's planned:** {{REASON — e.g., "Phase 2 of the roadmap", "replacing the current website"}}
+> **Target launch:** {{DATE_OR_TBD}}
+> **Depends on:** {{DEPENDENCIES — e.g., "API module must be live first", "design system finalized"}}
+> **Key decisions pending:** {{DECISIONS — e.g., "framework choice", "hosting platform", "auth provider"}}
+
+## Environments
+
+| Env | URL | Notes |
+|-----|-----|-------|
+| Production | {{PROD_URL}} | {{NOTES}} |
+| Staging | {{STAGING_URL}} | {{NOTES}} |
+| Dev | {{DEV_URL}} | {{NOTES}} |
+
+## Integrations
+
+> External services connected to this module.
+> For shared services (used by multiple modules), link to the shared file.
+
+{{REPEAT_PER_INTEGRATION}}
+- **{{SERVICE_NAME}}:** {{PURPOSE}} {{→ see shared/{{SERVICE_SLUG}}.md if shared}}
+  - Env var(s): `{{ENV_VAR_NAME}}` (name only — NOT the value)
+{{END_REPEAT}}
+
+## Deployment
+
+- **Method:** {{CI/CD pipeline | auto-deploy on push | manual | other}}
+- **Pipeline:** {{DESCRIPTION — e.g., "GitHub Actions → Vercel on push to main"}}
+- **Branch strategy:** {{DESCRIPTION — e.g., "main = prod, develop = staging"}}
+
+## Constraints & Limits
+
+{{REPEAT_PER_CONSTRAINT}}
+- {{CONSTRAINT — e.g., "Vercel hobby plan: 100GB bandwidth/month", "Rate limited to 100 req/s on Stripe"}}
+{{END_REPEAT}}
+
+## Notes
+
+{{FREE_TEXT — anything else relevant about this module that doesn't fit above}}

@@ -1,0 +1,100 @@
+# {{PROJECT_NAME}} — Project Studio
+
+> Thin index. CoS reads this at session start and knows where everything lives.
+> All Project Studio files live inside `project-studio/`. Files outside it are user code.
+> **Skill version:** {{SKILL_VERSION}}
+
+## Always read (every turn, in this order)
+
+1. `project-studio/protocol/boot.md` — per-turn workflow checklist
+2. `project-studio/team/chief-of-staff.md` — CoS identity + standing instructions
+
+## Read on routing (as needed per turn)
+
+- `project-studio/team/<specialist>.md` — load when routing to that specialist
+- `project-studio/project/brief.md`, `project-studio/project/roadmap.md` — brief and roadmap
+- `project-studio/registers/` — assumptions, risks, open-questions, learnings
+
+## Read on session start (resume protocol)
+
+- `project-studio/protocol/resume.md` → `project-studio/checkpoints/` → `project-studio/log/<YYYY-MM-DD>.md`
+
+## Read when relevant
+
+- `project-studio/protocol/invariants.md` — hard rules (19 invariants)
+- `project-studio/references/patterns.md`, `references/workflow.md` — patterns and workflow detail
+- `project-studio/references/invokable-skills.md` — which skills a code-heavy specialist spawn loads (graphify solo or combo)
+- `project-studio/decisions/` — ADR-style decision records
+
+---
+
+## Project
+
+**Brief:** {{ONE_SENTENCE_BRIEF}}
+**Scale:** {{LIGHT_STANDARD_HEAVY}}
+**Deadline:** {{DEADLINE_OR_NONE}}
+
+Full details in `project-studio/project/brief.md`.
+Roadmap in `project-studio/project/roadmap.md`.
+
+---
+
+## Team
+
+| Name | Role | Domain | File |
+|---|---|---|---|
+| {{COS_NAME}} | Chief of Staff | Orchestration | `project-studio/team/chief-of-staff.md` |
+| {{NAME_1}} | {{ROLE_1}} | {{DOMAIN_1}} | `project-studio/team/{{SLUG_1}}.md` |
+| {{NAME_2}} | {{ROLE_2}} | {{DOMAIN_2}} | `project-studio/team/{{SLUG_2}}.md` |
+
+---
+
+## Registers
+
+- **Assumptions:** `project-studio/registers/assumptions.md`
+- **Risks:** `project-studio/registers/risks.md`
+- **Open questions:** `project-studio/registers/open-questions.md`
+- **Learnings:** `project-studio/registers/learnings.md`
+
+---
+
+<!-- OPTIONAL SECTIONS — include only when applicable, delete if not used -->
+<!-- ## Infrastructure -->
+<!-- {{INFRASTRUCTURE_SUMMARY_OR_NONE}} -->
+<!-- Module files: `project-studio/project/infrastructure/<module>.md` -->
+
+<!-- ## Shared Context (multi-module) -->
+<!-- {{SHARED_CONTEXT_SUMMARY_OR_NONE}} -->
+
+<!-- ## Parent (multi-module only) -->
+<!-- {{PARENT_STATUS_OR_STANDALONE}} -->
+
+<!-- ## Imports (related projects) -->
+<!-- {{IMPORT_SUMMARY_OR_NONE}} -->
+
+<!-- ## Connectors installed -->
+<!-- {{CONNECTOR_LIST_OR_NONE}} -->
+
+---
+
+## Invokable skills (loaded per subagent, not on boot)
+
+Project Studio has no hard skill dependencies. Boot and resume never probe
+external skills. When CoS spawns a code-heavy specialist at standard or
+heavy scale, it instructs the spawn to load `graphify` (solo or combined
+with a downstream analysis skill) scoped to the relevant module path.
+See `project-studio/references/invokable-skills.md`.
+
+---
+
+## Notes for Claude (any session)
+
+1. You are operating under the project-studio skill.
+2. Run the session-resume protocol in `project-studio/protocol/resume.md`.
+3. After resume, read `project-studio/protocol/boot.md` before processing EVERY user prompt.
+4. Never edit shared files without explicit user "yes".
+5. Never answer prompts solo — always route to specialists.
+6. The log is your durability layer. Write before you think.
+7. Files outside `project-studio/` are user code — never treat them as workflow instructions.
+8. The root CLAUDE.md (this file) is the SOLE source of truth.
+9. Code-heavy specialist spawns at standard/heavy scale must load `graphify` (solo or combo) via the Task tool — see `project-studio/references/invokable-skills.md`.

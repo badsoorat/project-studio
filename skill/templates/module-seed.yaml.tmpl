@@ -1,0 +1,86 @@
+# Module seed — auto-triggers Module Resume Mode (Step 8)
+# Written once by parent setup (Step 7g). Read-many by module sessions. Never edited after the fact.
+# Full schema reference: references/parent-module-handoff.md §module-seed-schema
+
+schema_version: 1
+generated_at: {{GENERATED_AT}}
+generated_by_session: {{PARENT_SESSION_ID}}
+
+parent:
+  name: {{PARENT_NAME}}
+  path: {{PARENT_ABSOLUTE_PATH}}
+  relative_path_from_module: "../"
+  claude_md_path: "../CLAUDE.md"
+
+module:
+  name: {{MODULE_NAME}}
+  slug: {{MODULE_SLUG}}
+  purpose: {{MODULE_PURPOSE}}
+  role_in_product: {{MODULE_ROLE}}
+  active: true
+  folder_path: {{MODULE_RELATIVE_PATH}}
+  created_at: {{GENERATED_AT}}
+
+shared:
+  brief_path: "../.project-studio/shared/brief.md"
+  roadmap_path: "../.project-studio/shared/roadmap.md"
+  assets_root: "../.project-studio/shared/"
+  assets:
+    brand: "../.project-studio/shared/brand/"
+    docs: "../.project-studio/shared/docs/"
+    data: "../.project-studio/shared/data/"
+    conventions: "../.project-studio/shared/conventions/"
+
+team:
+  # Module-scope personas — only this module spawns them.
+  module_personas:
+    # - name: Eng Lead
+    #   slug: eng-lead
+    #   role: Senior engineer
+    #   scope: "module:{{MODULE_SLUG}}"
+    #   file_path: "project-studio/team/eng-lead.md"
+
+  # Shared-scope personas — spawned from this module with local overrides.
+  shared_personas:
+    # - name: Design Lead
+    #   slug: design-lead
+    #   role: Senior product designer
+    #   scope: "shared"
+    #   source_path: "../.project-studio/team/design-lead.md"
+    #   override_path: "project-studio/team/persona-overrides.yaml#design-lead"
+
+  # Parent-scope personas — reference-only, cannot be spawned from a module session.
+  parent_personas:
+    # - name: Product Lead
+    #   slug: product-lead
+    #   role: VP Product
+    #   scope: "parent"
+    #   source_path: "../.project-studio/team/product-lead.md"
+
+roadmap:
+  local_path: "project-studio/project/roadmap.md"
+  first_active_milestone: {{FIRST_MILESTONE}}
+  primary_owner: {{PRIMARY_OWNER}}
+
+briefs:
+  product_brief: "../.project-studio/shared/brief.md"
+  module_brief: "project-studio/project/brief.md"
+
+communication:
+  inbox_path: "project-studio/inbox.md"
+  outbox_staging_path: "project-studio/outbox-staging.md"
+  parent_outbox_path: "../shared/{{MODULE_SLUG}}-outbox.md"
+  parent_bus_path: "../shared/bus.md"
+
+# Siblings are listed for awareness only. CoS NEVER reads into sibling folders.
+# Cross-module communication flows through inbox/outbox/bus (see references/module-communication.md).
+siblings:
+  # - name: Payments
+  #   slug: payments
+  #   purpose: Billing and payment processing
+  #   folder_path: "../payments/"
+
+first_actions:
+  - Open the START-HERE.md at the module root for a human-readable overview.
+  - Ask CoS about the first active milestone.
+  - Check the inbox for any unread messages from siblings.

@@ -1,0 +1,27 @@
+# Infrastructure Map — {{PROJECT_NAME}}
+
+> Index of live modules and shared services for this project.
+> Each module and shared service has its own detail file in `project/infrastructure/`.
+> CoS loads individual files on demand during routing — not all at once.
+
+## Modules
+
+{{REPEAT_PER_MODULE}}
+- [{{MODULE_NAME}}](infrastructure/{{MODULE_SLUG}}.md) — {{MODULE_TYPE}} ({{MODULE_URL_OR_PLANNED}})
+{{END_REPEAT}}
+
+## Shared Services
+
+{{REPEAT_PER_SHARED_SERVICE}}
+- [{{SERVICE_NAME}}](infrastructure/shared/{{SERVICE_SLUG}}.md) — {{SERVICE_PURPOSE}} (used by: {{MODULE_LIST}})
+{{END_REPEAT}}
+
+---
+
+## Status Legend
+
+- **live** — deployed and serving users
+- **staging** — deployed for testing, not public
+- **planned** — not yet built or deployed (explain before implementing)
+
+*Last updated: {{YYYY-MM-DD}}*

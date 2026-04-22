@@ -1,0 +1,173 @@
+# Team roster for the project-studio upgrade-system meta-project.
+# Per plan §7, §14.4, and §15.2. Scope is "cross-surface" for all main
+# personas — there is no module wall between skill/ and upgrade-system/.
+
+version: 1
+mode: single-project
+resolved_on: "2026-04-22T00:00:00Z"
+
+personas:
+
+  - id: chief-of-staff
+    kind: main
+    scope: cross-surface
+    role: >
+      Coordinates the team, runs the session, owns triage verdicts, merge
+      decisions, and eval-gate enforcement. Speaks first on resume.
+    primary_skill: anthropic-skills:project-studio
+    loadouts:
+      - anthropic-skills:project-studio
+      - gstack-team:autoplan
+      - gstack-team:context-save
+      - gstack-team:context-restore
+      - gstack-team:careful
+      - gstack-team:retro
+      - product-management:brainstorm
+      - product-management:write-spec
+      - product-management:stakeholder-update
+      - anthropic-skills:doc-coauthoring
+    writes_to:
+      - .project-studio/
+      - upgrade-system/decisions/
+    memory: .project-studio/persona-memory/chief-of-staff/
+
+  - id: skill-architect
+    kind: main
+    scope: cross-surface
+    role: >
+      Owns SKILL.md and atom specs. Authors the Stage-5 analysis block on
+      Change Requests. Signs off per-atom during F2.
+    primary_skill: anthropic-skills:skill-creator
+    loadouts:
+      - anthropic-skills:skill-creator
+      - anthropic-skills:context-engineering-kit
+      - anthropic-skills:doc-coauthoring
+      - anthropic-skills:clean-architecture
+      - anthropic-skills:domain-driven-design
+      - anthropic-skills:software-design-philosophy
+      - anthropic-skills:pragmatic-programmer
+      - anthropic-skills:pdf
+    writes_to:
+      - skill/
+      - upgrade-system/architecture/
+      - upgrade-system/provenance/
+    memory: .project-studio/persona-memory/skill-architect/
+
+  - id: eval-lead
+    kind: main
+    scope: cross-surface
+    role: >
+      Owns the eval runner and the 5-tier regime. Peer-reviews scenarios
+      authored by scenario-agent before implementation begins.
+    primary_skill: anthropic-skills:superpowers
+    loadouts:
+      - anthropic-skills:superpowers
+      - anthropic-skills:code-guide
+      - anthropic-skills:clean-code
+      - anthropic-skills:refactoring-patterns
+      - anthropic-skills:pragmatic-programmer
+      - anthropic-skills:ddia-systems
+      - anthropic-skills:release-it
+      - anthropic-skills:c-framework
+      - gstack-team:review
+    writes_to:
+      - upgrade-system/evals/
+      - upgrade-system/scenarios/
+      - upgrade-system/schemas/
+    memory: .project-studio/persona-memory/eval-lead/
+
+  - id: release-manager
+    kind: main
+    scope: cross-surface
+    role: >
+      Owns release candidates, Track A and Track B publishing, security
+      audits via gstack-team:cso, and the ship workflow.
+    primary_skill: gstack-team:ship
+    loadouts:
+      - gstack-team:ship
+      - gstack-team:canary
+      - gstack-team:make-pdf
+      - gstack-team:land-and-deploy
+      - gstack-team:cso
+      - anthropic-skills:release-it
+      - anthropic-skills:code-guide
+      - anthropic-skills:pdf
+    writes_to:
+      - .github/workflows/release-track-a.yml
+      - .github/workflows/release-track-b.yml
+      - upgrade-system/migrations/
+      - CHANGELOG.md
+    memory: .project-studio/persona-memory/release-manager/
+
+  - id: downstream-compat-lead
+    kind: main
+    scope: cross-surface
+    role: >
+      Represents downstream users running prior versions. Owns T5 compat
+      fixtures and the upgrade-workspace sub-skill QA.
+    primary_skill: gstack-team:qa
+    loadouts:
+      - gstack-team:qa
+      - gstack-team:investigate
+      - gstack-team:browse
+      - anthropic-skills:webapp-testing
+      - anthropic-skills:mobile-responsive-testing
+      - anthropic-skills:code-guide
+    writes_to:
+      - skill/sub-skills/upgrade-workspace/
+      - upgrade-system/fixtures/
+      - upgrade-system/evals/tiers/T5-compat/
+    memory: .project-studio/persona-memory/downstream-compat-lead/
+
+  # -----------------------------------------------------------------
+  # Dedicated sub-agents (plan §7). These spawn per Change Request;
+  # the same agent MUST NOT write both scenarios and implementation
+  # for the same request.
+  # -----------------------------------------------------------------
+
+  - id: scenario-agent
+    kind: sub-agent
+    scope: scenarios-only
+    role: >
+      Reads Change Request + atom specs only. Authors scenarios, commits
+      in red state. Forbidden from reading implementation code during
+      authorship (plan §7 structural guard).
+    primary_skill: anthropic-skills:context-engineering-kit
+    loadouts:
+      - anthropic-skills:context-engineering-kit
+      - anthropic-skills:superpowers
+      - anthropic-skills:c-framework
+      - anthropic-skills:mom-test
+      - anthropic-skills:clean-code
+    writes_to:
+      - upgrade-system/scenarios/
+    reads_forbidden:
+      - skill/**/*.py
+      - skill/**/*.js
+      - skill/protocol/
+      - skill/scripts/
+    memory: .project-studio/persona-memory/scenario-agent/
+
+  - id: implementation-agent
+    kind: sub-agent
+    scope: implementation-only
+    role: >
+      Reads Change Request + atom specs + committed scenarios. Writes
+      implementation to turn scenarios green. Cannot modify scenarios
+      except via explicit scenario-revision follow-up commit, which
+      re-triggers scenario peer review.
+    primary_skill: anthropic-skills:code-guide
+    loadouts:
+      - anthropic-skills:code-guide
+      - anthropic-skills:superpowers
+      - anthropic-skills:clean-code
+      - anthropic-skills:refactoring-patterns
+      - anthropic-skills:clean-architecture
+      - anthropic-skills:pragmatic-programmer
+      - anthropic-skills:software-design-philosophy
+    writes_to:
+      - skill/
+    reads_forbidden: []
+    writes_forbidden:
+      - upgrade-system/scenarios/
+    memory: .project-studio/persona-memory/implementation-agent/

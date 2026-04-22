@@ -1,0 +1,92 @@
+# Outbox — {{MODULE_NAME}}
+
+<!--
+  This file carries outbound messages from module `{{MODULE_SLUG}}` to siblings and the parent.
+  Two variants of this template exist in the wild:
+
+    1. `<module>/project-studio/outbox-staging.md`
+         Drafts live here until the user runs the `sync` command. CoS may append drafts
+         when an auto-draft gate fires (see references/module-communication.md §auto-draft-gates).
+         Drafts are never delivered automatically — sync always proposes first.
+
+    2. `<parent>/shared/{{MODULE_SLUG}}-outbox.md`
+         The delivery queue. sync moves approved drafts from staging into here, then
+         routes them to the target inboxes and to bus.md. Entries are consumed and
+         moved to `{{MODULE_SLUG}}-outbox-sent.md` after delivery.
+
+  Both variants share the schema below. Only the filename and the "Status" block differ.
+
+  Full message model: references/module-communication.md §message-format
+  Sync flow:          references/module-communication.md §sync-command
+  Retention:          references/module-communication.md §retention-and-rotation
+-->
+
+## Status
+
+- schema_version: 1
+- module: {{MODULE_SLUG}}
+- last_sync_at: {{LAST_SYNC_AT}}
+- pending_drafts: 0
+- pending_queue: 0
+
+## Messages
+
+<!--
+  Each message below is a fenced YAML block followed by a prose body.
+  DO NOT edit past messages once delivered — append new ones at the bottom.
+  The `status` field is the only mutable field after delivery, and only sync may change it.
+
+  Valid targets:
+    @<module-slug>                   → a sibling module's inbox
+    @<module-slug>/<persona-slug>    → a specific persona in that module
+    @all                             → every module's inbox (broadcast)
+    @parent                          → the parent session's inbox
+    @<persona-slug>                  → a persona in this module (local echo)
+
+  Valid tags (with default retention):
+    decision         90d
+    blocker          90d  (urgent)
+    question         30d
+    fyi              30d
+    handoff          90d
+    milestone        90d
+    scope            90d  (urgent)
+    persona-promote  90d
+    shared-update    14d  (fyi-class broadcast)
+-->
+
+<!-- EXAMPLE — delete before committing real entries -->
+
+```yaml
+id: 2026-04-11T14-32-00Z-{{MODULE_SLUG}}-0001
+timestamp: 2026-04-11T14:32:00Z
+from:
+  module: {{MODULE_SLUG}}
+  persona: chief-of-staff
+to:
+  - "@payments"
+  - "@parent"
+tags: [decision, shared-update]
+thread: null
+priority: normal
+expires: 2026-07-10
+status: draft   # draft | queued | sent | failed
+```
+
+**Subject:** Switched auth provider from Auth0 to Clerk
+
+**Body:**
+
+We're migrating away from Auth0 because of pricing at the next tier. Clerk's
+session model is compatible enough that the public `/api/session` contract
+does not change. Payments will see no behaviour change; the only thing that
+moves is the JWT issuer claim.
+
+**Decision refs:** ADR-014
+
+**Action requested:** None — this is FYI plus a decision broadcast. Payments
+should update their shared-index snapshot on next resume.
+
+---
+
+<!-- END EXAMPLE -->

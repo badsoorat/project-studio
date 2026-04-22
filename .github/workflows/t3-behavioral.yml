@@ -1,0 +1,41 @@
+# T3 — Per-atom behavioral tier.
+# Plan §3. Runs each atom's scenarios under a pinned model+prompt pair.
+# Required on `main`; large so opt-in per PR via path filter in F4.
+
+name: T3 — behavioral
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    paths:
+      - "skill/**"
+      - "upgrade-system/scenarios/**"
+      - "upgrade-system/architecture/**"
+      - "upgrade-system/evals/**"
+
+jobs:
+  t3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml jsonschema
+
+      - name: Run T3 behavioral tier
+        env:
+          # Pinned model identities — F4 reads these from secrets.
+          EVAL_MODEL: ${{ secrets.EVAL_MODEL }}
+          EVAL_API_KEY: ${{ secrets.EVAL_API_KEY }}
+        run: |
+          python upgrade-system/evals/runner.py --tier T3

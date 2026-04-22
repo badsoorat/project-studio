@@ -1,0 +1,163 @@
+{
+  "description": "Project-studio setup-flow evals. Each scenario spawns an isolated subagent that runs the first ~10 turns of setup using the updated setup-flow.md. Graders score: (a) did the agent ask Q1, Q2, (Q2b if needed), Q3 in order, (b) did it avoid out-of-context questions, (c) did it correctly resolve the scenario label.",
+  "meta": {
+    "skill_version": "3.1.0",
+    "setup_flow_path": "references/setup-flow.md"
+  },
+  "scenarios": [
+    {
+      "id": "A_new_single_standard",
+      "label": "Scenario A \u2014 New + Single + Standard",
+      "prompt": "Start a new project with project-studio. I'm building a personal portfolio website from scratch, solo, over about two weeks.",
+      "expected": {
+        "scenario": "A",
+        "scale": "standard",
+        "questions_asked_in_order": [
+          "Q1 new-or-existing",
+          "Q2 single-or-multi",
+          "Q3 scale"
+        ],
+        "questions_NOT_asked": [
+          "Q2b parent-exists",
+          "related projects menu",
+          "single-or-multi before Q1"
+        ],
+        "must_not_contain": [
+          "even ones you haven't started",
+          "Related-projects question",
+          "Step 1b",
+          "Step 1c",
+          "Step 1d"
+        ]
+      }
+    },
+    {
+      "id": "B_new_multi_standard",
+      "label": "Scenario B \u2014 New + Multi + Standard",
+      "prompt": "New project, project-studio setup. I'm planning a SaaS product with three pieces: a marketing website, the main web app, and an iOS app. None of them exist yet.",
+      "expected": {
+        "scenario": "B",
+        "scale": "standard",
+        "questions_asked_in_order": [
+          "Q1 new-or-existing",
+          "Q2 single-or-multi",
+          "Q3 scale"
+        ],
+        "questions_NOT_asked": [
+          "Q2b parent-exists",
+          "related projects menu"
+        ],
+        "must_not_contain": [
+          "even ones you haven't started",
+          "Related-projects question"
+        ]
+      }
+    },
+    {
+      "id": "C_existing_single_standard",
+      "label": "Scenario C \u2014 Existing + Single + Standard",
+      "prompt": "I have an existing Next.js project, just a single marketing website, and I want project-studio to manage it. The code is already in the current folder.",
+      "expected": {
+        "scenario": "C",
+        "scale": "standard",
+        "questions_asked_in_order": [
+          "Q1 new-or-existing",
+          "Q2 single-or-multi",
+          "Q3 scale"
+        ],
+        "questions_NOT_asked": [
+          "Q2b parent-exists",
+          "related projects menu"
+        ],
+        "must_not_contain": [
+          "Related-projects question",
+          "Step 1b",
+          "Step 1c"
+        ]
+      }
+    },
+    {
+      "id": "D1_existing_multi_noparent_standard",
+      "label": "Scenario D1 \u2014 Existing + Multi + No Parent + Standard",
+      "prompt": "I have two existing projects \u2014 a Next.js web app and a separate Node.js API repo. They're not coordinated anywhere yet. I want project-studio set up for the web app primarily, with context about the API.",
+      "expected": {
+        "scenario": "D1",
+        "scale": "standard",
+        "questions_asked_in_order": [
+          "Q1 new-or-existing",
+          "Q2 single-or-multi",
+          "Q2b parent-exists",
+          "Q3 scale"
+        ],
+        "questions_NOT_asked": [
+          "related projects menu"
+        ],
+        "must_not_contain": [
+          "Related-projects question"
+        ]
+      }
+    },
+    {
+      "id": "D2_existing_multi_parent_standard",
+      "label": "Scenario D2 \u2014 Existing + Multi + Parent Exists + Standard",
+      "prompt": "I already have a parent project-studio setup coordinating a website and an API. Now I need to add a new admin dashboard module to it. The admin code exists in a subfolder called 'admin'.",
+      "expected": {
+        "scenario": "D2",
+        "scale": "standard",
+        "questions_asked_in_order": [
+          "Q1 new-or-existing",
+          "Q2 single-or-multi",
+          "Q2b parent-exists",
+          "Q3 scale"
+        ],
+        "questions_NOT_asked": [
+          "related projects menu"
+        ],
+        "must_not_contain": [
+          "Related-projects question"
+        ]
+      }
+    },
+    {
+      "id": "A_new_single_light",
+      "label": "Scenario A \u2014 New + Single + Light (fast-track)",
+      "prompt": "Quick light project. New landing page I want to write today, solo, just a few hours. Use project-studio.",
+      "expected": {
+        "scenario": "A",
+        "scale": "light",
+        "questions_asked_in_order": [
+          "Q1 new-or-existing",
+          "Q2 single-or-multi",
+          "Q3 scale"
+        ],
+        "questions_NOT_asked": [
+          "Q2b parent-exists",
+          "related projects menu",
+          "Step 5 connectors",
+          "Step 6 review"
+        ],
+        "must_not_contain": [
+          "Related-projects question",
+          "Step 8b"
+        ]
+      }
+    }
+  ],
+  "grading_rubric": {
+    "pass_criteria": [
+      "Agent asked Q1, Q2, (Q2b only if Existing+Multi), Q3 in order before any scenario work",
+      "Agent announced the correct scenario label (A/B/C/D1/D2) after Q1+Q2(+Q2b)",
+      "Agent did NOT ask the removed 'related projects (optional)' question",
+      "Agent did NOT use stale step labels (Step 1b, 1c, 1d, 8b)",
+      "Agent did NOT hallucinate out-of-context questions (e.g. asking about modules before Q2, asking parent before Q2b applies)"
+    ],
+    "fail_conditions": [
+      "Asked a scenario-specific question before Step 1 gate completed",
+      "Skipped Q2 (single/multi) entirely",
+      "Asked Q2b in a New project case",
+      "Asked related-projects menu in any scenario",
+      "Invented a scenario other than A/B/C/D1/D2",
+      "Referenced Step 1b, 1c, 1d, or 8b"
+    ]
+  }
+}

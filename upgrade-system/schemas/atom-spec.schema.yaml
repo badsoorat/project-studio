@@ -1,0 +1,62 @@
+# JSONSchema (in YAML) for atom spec frontmatter.
+# Consumed by: upgrade-system/evals/tiers/T2-structural/validate_atoms.py
+# Stage: F1 stub. F3 promotes this to the final, strict schema.
+
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://project-studio.local/schemas/atom-spec.schema.yaml"
+title: "Atom specification"
+type: object
+required:
+  - id
+  - title
+  - surface
+  - change_caution
+  - owner_persona
+  - source_lines
+  - related_atoms
+  - scenarios
+  - invariants
+properties:
+  id:
+    type: string
+    pattern: "^atom-[0-9]{3}-[a-z0-9-]+$"
+  title:
+    type: string
+    minLength: 1
+  surface:
+    type: string
+    enum: [skill, upgrade-system, shared]
+  change_caution:
+    type: string
+    enum: [low, medium, high]
+  owner_persona:
+    type: string
+    enum:
+      - chief-of-staff
+      - skill-architect
+      - eval-lead
+      - release-manager
+      - downstream-compat-lead
+  source_lines:
+    type: object
+    required: [file, from_line, to_line]
+    properties:
+      file:      { type: string }
+      from_line: { type: integer, minimum: 0 }
+      to_line:   { type: integer, minimum: 0 }
+  related_atoms:
+    type: array
+    items:
+      type: string
+      pattern: "^atom-[0-9]{3}-[a-z0-9-]+$"
+  scenarios:
+    type: object
+    required: [red_tier3, red_tier4, red_tier5]
+    properties:
+      red_tier3: { type: array, items: { type: string } }
+      red_tier4: { type: array, items: { type: string } }
+      red_tier5: { type: array, items: { type: string } }
+  invariants:
+    type: array
+    items:
+      type: string

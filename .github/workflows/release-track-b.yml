@@ -1,0 +1,51 @@
+# Track B — upgrade-workspace sub-skill release.
+# Builds upgrade-workspace-v<a.b.c>.skill from skill/sub-skills/upgrade-workspace/.
+# Independent versioning from Track A. No-op while the sub-skill is a stub.
+# Plan §1.2.
+
+name: release — Track B (upgrade-workspace sub-skill)
+
+on:
+  push:
+    tags:
+      - "upgrade-workspace-v*.*.*"
+
+jobs:
+  build-track-b:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Skip if stub
+        id: stub-check
+        run: |
+          if [ ! -f skill/sub-skills/upgrade-workspace/SKILL.md ]; then
+            echo "::notice::upgrade-workspace is a stub; release-track-b is a no-op."
+            echo "is_stub=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_stub=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Python
+        if: steps.stub-check.outputs.is_stub == 'false'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build .skill bundle
+        if: steps.stub-check.outputs.is_stub == 'false'
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/upgrade-workspace-v}"
+          BUNDLE="dist/upgrade-workspace-v${VERSION}.skill"
+          mkdir -p dist
+          tar --exclude='.DS_Store' \
+              -czf "${BUNDLE}" \
+              -C skill/sub-skills/upgrade-workspace .
+          ls -la dist/
+
+      - name: Upload release artifact
+        if: steps.stub-check.outputs.is_stub == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: upgrade-workspace-skill
+          path: dist/upgrade-workspace-v*.skill

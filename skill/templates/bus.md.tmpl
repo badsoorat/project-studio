@@ -1,0 +1,66 @@
+# Bus — {{PARENT_NAME}}
+
+<!--
+  The bus is the parent-level communication archive. Every message routed by `sync`
+  gets a short entry here, regardless of which module sent it or who it was addressed to.
+  This gives the parent session (and the user) a single scrollable product-wide feed
+  of cross-module activity.
+
+  Location: <parent>/shared/bus.md
+  Companion: <parent>/shared/bus-routing.log (append-only one-line-per-event log)
+  Full model: references/module-communication.md §bus-semantics
+  Rotation:  references/module-communication.md §retention-and-rotation
+
+  Rules:
+    - Append-only. Never edit historical entries.
+    - sync is the only writer. Module sessions do not touch bus.md directly.
+    - Each entry is a one-paragraph summary, not the full body. Full bodies live in
+      the receiving module's inbox and the sender's outbox-sent archive.
+    - Rotated content collapses into a Summary Block at the top of the archive file.
+-->
+
+## Status
+
+- schema_version: 1
+- parent: {{PARENT_NAME}}
+- last_entry_at: {{LAST_ENTRY_AT}}
+- entries_last_30d: 0
+- rotation_last_run: {{ROTATION_LAST_RUN}}
+
+## Active (rolling 30 days)
+
+<!--
+  Each entry format:
+
+    ### YYYY-MM-DDTHH:MM:SSZ — <from-module>/<persona-slug> → <targets>
+    **tags:** [decision, shared-update]   **priority:** normal   **id:** <msg-id>
+    **subject:** <one line>
+
+    <one-paragraph summary — 1 to 3 sentences. Full body is in the receiver's inbox.>
+
+    **refs:** ADR-014, milestone:auth-v2
+
+  Entries are strictly chronological. Never reorder.
+-->
+
+<!-- No active entries yet. -->
+
+## Rotated
+
+<!--
+  When an entry exceeds its retention window, it is folded into a summary block here
+  rather than deleted. Summary blocks look like:
+
+    ### Summary 2026-03-01 → 2026-03-31 (27 entries)
+    - 12 decision broadcasts (all merged into Tier 1 roadmap)
+    - 8 blockers (all resolved; see ADR-011, ADR-012)
+    - 5 shared-update FYIs (all absorbed into per-module shared-index snapshots)
+    - 2 persona-promote requests (1 approved, 1 declined)
+    - Full rotated content: archive/bus-2026-03.md.sealed
+
+  The sealed archive file is never read during normal resume — it exists only for
+  post-mortem and audit. See references/module-communication.md §retention-and-rotation
+  for the sealing rules.
+-->
+
+<!-- No rotated entries yet. -->

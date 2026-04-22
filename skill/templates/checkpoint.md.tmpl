@@ -1,0 +1,32 @@
+# Checkpoint {{N}} — {{SHORT_LABEL}}
+
+**Timestamp:** {{YYYY-MM-DD HH:MM:SS}}
+**Trigger:** {{init | milestone-complete | manual | end-of-month}}
+
+## Project state
+- Phase: {{CURRENT_PHASE}}
+- Active milestone: {{MILESTONE}}
+- Last completed milestone: {{LAST_MILESTONE}}
+- Turns since last checkpoint: {{N_TURNS}}
+
+## Team state
+{{TEAM_ROSTER_SUMMARY}}
+
+## Roadmap snapshot
+{{ROADMAP_AS_OF_NOW}}
+
+## Registers snapshot
+- Active assumptions: {{COUNT}}
+- Active risks: {{COUNT}}
+- Open questions: {{COUNT}}
+- Learnings logged: {{COUNT}}
+
+## Recent decisions
+- D-{{NNN}}: {{DECISION_TITLE}}
+- D-{{NNN}}: {{DECISION_TITLE}}
+
+## Notes
+{{ANY_CONTEXT_WORTH_PRESERVING}}
+
+## Rollback
+To roll back to this checkpoint: restore CLAUDE.md, registers, and roadmap to the state captured here. Persona context-notes and logs remain as-is (append-only).

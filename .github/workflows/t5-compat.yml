@@ -1,0 +1,36 @@
+# T5 — Backwards-compat tier.
+# Plan §3. Runs prior-version compat fixtures against the working-tree
+# skill. Owned by downstream-compat-lead. Gates release-track-a + b.
+
+name: T5 — compat
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    paths:
+      - "skill/**"
+      - "upgrade-system/fixtures/**"
+      - "upgrade-system/evals/tiers/T5-compat/**"
+
+jobs:
+  t5:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml jsonschema
+
+      - name: Run T5 compat tier
+        run: |
+          python upgrade-system/evals/runner.py --tier T5

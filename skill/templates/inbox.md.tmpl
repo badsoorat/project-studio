@@ -1,0 +1,61 @@
+# Inbox — {{MODULE_NAME}}
+
+<!--
+  This file receives messages delivered by `sync` from sibling modules and the parent.
+  sync writes here; the module session reads here. The module session may mark entries
+  as read or archived, but never deletes — rotation is handled by age-based policy
+  (see references/module-communication.md §retention-and-rotation).
+
+  Read flow (see references/parent-module-handoff.md §module-resume-mode Step 5):
+    1. On resume, CoS reads this file under "## Unread".
+    2. For each unread entry, CoS surfaces subject + tags + priority to the user.
+    3. The user decides: act on it, mark read, or defer.
+    4. CoS moves actioned entries to "## Read" with a dated marker.
+
+  DO NOT edit message bodies. Append new status markers at the end of the entry.
+-->
+
+## Status
+
+- schema_version: 1
+- module: {{MODULE_SLUG}}
+- unread_count: 0
+- urgent_count: 0
+- last_delivery_at: {{LAST_DELIVERY_AT}}
+
+## Unread
+
+<!--
+  New messages land here. Same schema as outbox (see templates/outbox.md.tmpl).
+  Delivery-added fields beyond the outbox schema:
+    delivered_at:   ISO timestamp when sync wrote this entry
+    delivered_by:   sync invocation id
+    source_path:    path in parent outbox this was copied from
+-->
+
+<!-- No unread messages. -->
+
+## Read
+
+<!--
+  After user acts on a message, CoS appends a status marker like:
+
+    ### read 2026-04-11T14:45:00Z by chief-of-staff
+    ref: 2026-04-11T14-32-00Z-payments-0003
+    action: noted in decisions/ADR-015; no further work
+
+  The full message body stays where it was — only a pointer is recorded here.
+  This gives a per-module audit trail without duplicating the content.
+-->
+
+<!-- No read messages yet. -->
+
+## Archived
+
+<!--
+  Rotated old messages land here only when the retention window is exceeded.
+  See references/module-communication.md §retention-and-rotation for the rotation
+  schedule and summary-block format.
+-->
+
+<!-- No archived messages yet. -->

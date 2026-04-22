@@ -1,0 +1,30 @@
+# Atom map — the canonical registry of the 103 atoms. Populated in F2.
+#
+# Each entry links an atom ID to its spec file under `atoms/` and to the
+# source lines in the v3.1.0 baseline under `skill/` that define it.
+#
+# Schema: see upgrade-system/schemas/atom-spec.schema.yaml
+#
+# This file is stub-only in F1. F2 enumerates all atoms. It is an
+# error for `atom-map.yaml` to reference an atom spec file that does
+# not exist, or vice versa — enforced by T2 (structural) CI.
+
+version: 0
+generated_at: null
+phase_of_record: F1-stub
+
+# Once F2 begins, entries land here in this shape:
+#
+# atoms:
+#   - id: atom-001-boot-protocol
+#     spec: atoms/atom-001-boot-protocol.md
+#     surface: skill
+#     change_caution: high
+#     owner_persona: skill-architect
+#     source:
+#       file: skill/protocol/boot.md
+#       from_line: 1
+#       to_line: 80
+#     related: [atom-002-invariants, atom-003-resume]
+
+atoms: []

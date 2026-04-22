@@ -1,0 +1,23 @@
+# Import Manifest
+
+> This file tracks all context imported from related projects. Read-only after initial write — only updated when the user explicitly adds slices, re-syncs, or adds new related projects.
+>
+> CoS: Check this file during routing to know which imports are available. Never load import files that aren't listed here. Never add entries without user initiation.
+
+{{REPEAT_PER_RELATED_PROJECT}}
+## {{PROJECT_NAME}} ({{PROJECT_URL_OR_DESCRIPTION}})
+
+- **Imported:** {{YYYY-MM-DD}}
+- **Slices:**
+{{REPEAT_PER_SLICE}}
+  - {{SLICE_NAME}} — `imports/{{PROJECT_SLUG}}/{{SLICE_FILE}}` (synced: {{YYYY-MM-DD}})
+{{END_REPEAT}}
+- **Status:** snapshot
+
+{{END_REPEAT}}
+
+---
+
+*To add a slice: tell CoS "bring the [slice] from [project]." CoS generates an extraction prompt.*
+*To re-sync: tell CoS "update the [slice] from [project] with the latest."*
+*To add a new related project: just mention it — CoS will ask which slices to import.*

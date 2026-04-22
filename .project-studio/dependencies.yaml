@@ -1,0 +1,251 @@
+version: 1
+resolved_on: "2026-04-22T00:00:00Z"
+cowork_session: "local_04440156-cfa4-49cc-be60-14ad29493d76"
+resolved_by: "chief-of-staff (session 1 — F0)"
+plan_reference: "UPGRADE-SYSTEM-PLAN.md §15"
+
+# --------------------------------------------------------------------
+# Hard dependencies — session refuses to proceed if any are missing.
+# Verified by inspecting the active <available_skills> list in the session.
+# --------------------------------------------------------------------
+hard_deps:
+
+  # 15.1.1 Orchestration
+  - name: anthropic-skills:project-studio
+    kind: skill
+    status: present
+    version_seen: "3.1.0 (installed runtime-of-record)"
+    notes: "Loaded at session start. Source baseline imported into skill/."
+
+  # 15.1.2 gstack-team plugin — all referenced sub-skills verified present
+  - name: gstack-team
+    kind: plugin
+    status: present
+    version_seen: null
+    sub_skills_present:
+      - gstack-team:ship
+      - gstack-team:review
+      - gstack-team:retro
+      - gstack-team:make-pdf
+      - gstack-team:plan-ceo-review
+      - gstack-team:plan-eng-review
+      - gstack-team:plan-design-review
+      - gstack-team:plan-devex-review
+      - gstack-team:qa
+      - gstack-team:canary
+      - gstack-team:investigate
+      - gstack-team:careful
+      - gstack-team:freeze
+      - gstack-team:guard
+      - gstack-team:unfreeze
+      - gstack-team:context-save
+      - gstack-team:context-restore
+      - gstack-team:autoplan
+      - gstack-team:learn
+      - gstack-team:office-hours
+      - gstack-team:browse
+      - gstack-team:design-review
+      - gstack-team:design-consultation
+      - gstack-team:cso
+      - gstack-team:land-and-deploy
+    sub_skills_missing: []
+
+  # 15.1.3 Core skill authoring
+  - name: anthropic-skills:skill-creator
+    kind: skill
+    status: present
+  - name: anthropic-skills:context-engineering-kit
+    kind: skill
+    status: present
+  - name: anthropic-skills:superpowers
+    kind: skill
+    status: present
+  - name: anthropic-skills:code-guide
+    kind: skill
+    status: present
+
+  # 15.1.4 Document production
+  - name: anthropic-skills:pdf
+    kind: skill
+    status: present
+  - name: anthropic-skills:docx
+    kind: skill
+    status: present
+  - name: anthropic-skills:xlsx
+    kind: skill
+    status: present
+  - name: anthropic-skills:pptx
+    kind: skill
+    status: present
+
+  # 15.1.5 Product-management ceremonies
+  - name: product-management:write-spec
+    kind: skill
+    status: present
+  - name: product-management:brainstorm
+    kind: skill
+    status: present
+  - name: product-management:product-brainstorming
+    kind: skill
+    status: present
+  - name: product-management:sprint-planning
+    kind: skill
+    status: present
+  - name: product-management:metrics-review
+    kind: skill
+    status: present
+  - name: product-management:stakeholder-update
+    kind: skill
+    status: present
+  - name: product-management:roadmap-update
+    kind: skill
+    status: present
+  - name: product-management:synthesize-research
+    kind: skill
+    status: present
+  - name: product-management:competitive-brief
+    kind: skill
+    status: present
+
+# --------------------------------------------------------------------
+# Persona-expertise dependencies — reduced-capability warnings if missing.
+# All verified present in the session's available_skills list.
+# --------------------------------------------------------------------
+persona_deps:
+
+  chief-of-staff:
+    - { name: anthropic-skills:project-studio, status: present }
+    - { name: gstack-team:autoplan,            status: present }
+    - { name: gstack-team:context-save,        status: present }
+    - { name: gstack-team:context-restore,     status: present }
+    - { name: gstack-team:careful,             status: present }
+    - { name: gstack-team:retro,               status: present }
+    - { name: product-management:brainstorm,   status: present }
+    - { name: product-management:write-spec,   status: present }
+    - { name: product-management:stakeholder-update, status: present }
+    - { name: anthropic-skills:doc-coauthoring, status: present }
+
+  skill-architect:
+    - { name: anthropic-skills:skill-creator,            status: present }
+    - { name: anthropic-skills:context-engineering-kit,  status: present }
+    - { name: anthropic-skills:doc-coauthoring,          status: present }
+    - { name: anthropic-skills:clean-architecture,       status: present }
+    - { name: anthropic-skills:domain-driven-design,     status: present }
+    - { name: anthropic-skills:software-design-philosophy, status: present }
+    - { name: anthropic-skills:pragmatic-programmer,     status: present }
+    - { name: anthropic-skills:pdf,                      status: present }
+
+  eval-lead:
+    - { name: anthropic-skills:superpowers,         status: present }
+    - { name: anthropic-skills:code-guide,          status: present }
+    - { name: anthropic-skills:clean-code,          status: present }
+    - { name: anthropic-skills:refactoring-patterns, status: present }
+    - { name: anthropic-skills:pragmatic-programmer, status: present }
+    - { name: anthropic-skills:ddia-systems,        status: present }
+    - { name: anthropic-skills:release-it,          status: present }
+    - { name: anthropic-skills:c-framework,         status: present }
+    - { name: gstack-team:review,                   status: present }
+
+  release-manager:
+    - { name: gstack-team:ship,             status: present }
+    - { name: gstack-team:canary,           status: present }
+    - { name: gstack-team:make-pdf,         status: present }
+    - { name: gstack-team:land-and-deploy,  status: present }
+    - { name: gstack-team:cso,              status: present }
+    - { name: anthropic-skills:release-it,  status: present }
+    - { name: anthropic-skills:code-guide,  status: present }
+    - { name: anthropic-skills:pdf,         status: present }
+
+  downstream-compat-lead:
+    - { name: gstack-team:qa,                          status: present }
+    - { name: gstack-team:investigate,                 status: present }
+    - { name: gstack-team:browse,                      status: present }
+    - { name: anthropic-skills:webapp-testing,         status: present }
+    - { name: anthropic-skills:mobile-responsive-testing, status: present }
+    - { name: anthropic-skills:code-guide,             status: present }
+
+  scenario-agent:
+    - { name: anthropic-skills:context-engineering-kit, status: present }
+    - { name: anthropic-skills:superpowers,             status: present }
+    - { name: anthropic-skills:c-framework,             status: present }
+    - { name: anthropic-skills:mom-test,                status: present }
+    - { name: anthropic-skills:clean-code,              status: present }
+
+  implementation-agent:
+    - { name: anthropic-skills:code-guide,              status: present }
+    - { name: anthropic-skills:superpowers,             status: present }
+    - { name: anthropic-skills:clean-code,              status: present }
+    - { name: anthropic-skills:refactoring-patterns,    status: present }
+    - { name: anthropic-skills:clean-architecture,      status: present }
+    - { name: anthropic-skills:pragmatic-programmer,    status: present }
+    - { name: anthropic-skills:software-design-philosophy, status: present }
+
+# --------------------------------------------------------------------
+# Plan-review lens library skills (§15.3) — referenced by Tier-1 atoms.
+# --------------------------------------------------------------------
+lens_deps:
+  plan-ceo-review:
+    - { name: product-management:brainstorm,       status: present }
+    - { name: anthropic-skills:yc-sv-development-framework, status: present }
+    - { name: anthropic-skills:yc-startup-fundamentals,     status: present }
+  plan-eng-review:
+    - { name: anthropic-skills:system-design,            status: present }
+    - { name: anthropic-skills:ddia-systems,             status: present }
+    - { name: anthropic-skills:release-it,               status: present }
+    - { name: anthropic-skills:clean-architecture,       status: present }
+    - { name: anthropic-skills:software-design-philosophy, status: present }
+  plan-design-review:
+    - { name: anthropic-skills:design-everyday-things,   status: present }
+    - { name: anthropic-skills:ux-heuristics,            status: present }
+    - { name: anthropic-skills:refactoring-ui,           status: present }
+    - { name: anthropic-skills:emil-design-eng,          status: present }
+    - { name: anthropic-skills:top-design,               status: present }
+    - { name: anthropic-skills:microinteractions,        status: present }
+  plan-devex-review:
+    - { name: anthropic-skills:code-guide,               status: present }
+    - { name: anthropic-skills:clean-code,               status: present }
+    - { name: anthropic-skills:pragmatic-programmer,     status: present }
+    - { name: anthropic-skills:refactoring-patterns,     status: present }
+
+# --------------------------------------------------------------------
+# Environment checks — performed against the Cowork shell sandbox.
+# The user's host may differ; these are re-checked at session resume.
+# --------------------------------------------------------------------
+environment:
+  python:            "3.10.12"         # sandbox; plan §16.1 wants ≥3.11 on host
+  git:               "2.34.1"
+  gh:                null              # not in sandbox; user's host may have it
+  bash_mcp:          present
+  cowork_directory:  "C:\\Users\\rajee\\Desktop\\Work\\Badsoorat\\project-studio"
+  pypdf:             "3.17.4"
+  reportlab:         "4.4.10"
+  pyyaml:            "6.0.3"
+  jsonschema:        "3.2.0"
+
+# --------------------------------------------------------------------
+# Gaps — non-empty "hard" halts the session.
+# --------------------------------------------------------------------
+gaps:
+  hard: []
+  persona: []
+  env:
+    - item: python
+      severity: warning
+      detail: "Sandbox Python is 3.10.12; plan §16.1 wants ≥3.11 on the host. Eval runner must be executed on the host, not in-sandbox."
+    - item: gh
+      severity: info
+      detail: "GitHub CLI not installed in the sandbox. Expected on the user's Windows host for the F1 GitHub repo steps; documented as a next step for the user."
+
+# --------------------------------------------------------------------
+# Outcome
+# --------------------------------------------------------------------
+outcome:
+  f0_status: pass
+  f1_clearance: granted
+  notes: |
+    All hard dependencies (§15.1) are present in the session. All persona-expertise
+    skills (§15.2) are present. All plan-review lens library skills (§15.3) are
+    present. Environment is adequate for scaffolding; the Python-version and gh
+    gaps are informational because the operations that need them (running evals,
+    pushing to GitHub) happen on the user's host, not in this sandbox.
+    Proceeding to F1.

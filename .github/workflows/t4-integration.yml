@@ -1,0 +1,38 @@
+# T4 — Integration tier.
+# Plan §3. Runs end-to-end session scripts that exercise cross-atom flows
+# (setup-wizard, multi-turn resume, parent/module handoff).
+
+name: T4 — integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    paths:
+      - "skill/**"
+      - "upgrade-system/**"
+
+jobs:
+  t4:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml jsonschema
+
+      - name: Run T4 integration tier
+        env:
+          EVAL_MODEL: ${{ secrets.EVAL_MODEL }}
+          EVAL_API_KEY: ${{ secrets.EVAL_API_KEY }}
+        run: |
+          python upgrade-system/evals/runner.py --tier T4

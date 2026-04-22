@@ -1,0 +1,96 @@
+# START HERE — {{MODULE_NAME}}
+
+> This file is a **human handoff**, not a Project Studio directive. It's written once
+> at parent-setup time so any person (or new session) landing in this folder can get
+> their bearings in under two minutes. If you're Claude: the machine-readable equivalent
+> lives in `project-studio/module-seed.yaml`. Read that for structure; read this for
+> narrative.
+
+## What this folder is
+
+**{{MODULE_NAME}}** is one module of the **{{PARENT_NAME}}** product. It lives in its own
+folder and is managed as a standalone Project Studio project, but it coordinates with
+sibling modules through a parent-level communication layer.
+
+- **Purpose:** {{MODULE_PURPOSE}}
+- **Role in the product:** {{MODULE_ROLE}}
+- **Parent folder:** `{{PARENT_ABSOLUTE_PATH}}`
+- **Created:** {{GENERATED_AT}}
+
+## Where everything lives
+
+```
+{{MODULE_NAME}}/
+├── CLAUDE.md                          ← Project Studio root index (module-local)
+├── START-HERE.md                      ← you are here
+├── project-studio/
+│   ├── module-seed.yaml               ← auto-trigger resume seed (read by CoS)
+│   ├── shared/
+│   │   ├── shared-index.md            ← index of parent-shared assets (relative paths)
+│   │   └── bus-snapshot.md            ← optional local view of recent bus entries
+│   ├── inbox.md                       ← messages from siblings and parent
+│   ├── outbox-staging.md              ← local drafts, delivered by `sync`
+│   ├── team/                          ← module-scope personas + shared-persona overrides
+│   ├── project/                       ← brief.md, roadmap.md, infrastructure/
+│   ├── protocol/                      ← module boot/resume files
+│   ├── registers/                     ← assumptions, risks, blockers, decisions
+│   ├── log/                           ← turn logs and checkpoints
+│   ├── imports/                       ← read-only context slices
+│   └── archive/                       ← rotated logs and sealed messages
+└── src/                               ← your code lives here
+```
+
+Parent-shared assets (brief, roadmap, brand, docs, conventions, data, parent- and
+shared-scope personas) live under `{{PARENT_ABSOLUTE_PATH}}/.project-studio/shared/`
+and `{{PARENT_ABSOLUTE_PATH}}/.project-studio/team/`. They are **referenced** from here
+via relative paths in `project-studio/shared/shared-index.md`, **not copied**. If a
+shared asset changes at the parent, a `shared-update` message will arrive in your
+inbox — there is no silent auto-sync.
+
+## What happens when you open a Claude session in this folder
+
+1. Claude boots, reads `CLAUDE.md`, and detects `project-studio/module-seed.yaml`.
+2. Detecting the seed auto-triggers **Module Resume Mode** (not the setup wizard).
+3. CoS reads the seed, then the local protocol, then the inbox, then the roadmap.
+4. CoS greets you with the current first active milestone and any unread messages.
+5. Work proceeds inside this folder for the rest of the session.
+
+If you want the setup wizard instead, delete `module-seed.yaml` (not recommended —
+this will orphan the module from the parent). For the full resume flow, see
+`project-studio/protocol/boot.md` and
+`{{PARENT_ABSOLUTE_PATH}}/.project-studio/shared/` references.
+
+## What crosses module boundaries (and what doesn't)
+
+| Crosses boundaries                         | Stays local                           |
+|--------------------------------------------|---------------------------------------|
+| Messages via inbox / outbox / bus          | All code under `src/`                 |
+| Shared assets (read-only, relative paths)  | Registers (assumptions, risks)        |
+| Parent roadmap Tier 1 milestones           | Module roadmap Tier 2 milestones      |
+| Parent- and shared-scope personas          | Module-scope personas                 |
+| ADRs promoted to parent                    | Module-only ADRs                      |
+
+CoS **never reads sibling module folders.** If you need information about a sibling,
+send a `question` message via the outbox and run `sync`. The sibling's next session
+will see it in their inbox.
+
+## Common first actions
+
+- **"What should I work on?"** — Ask CoS. It will open
+  `project-studio/project/roadmap.md` and point at the first active milestone.
+- **"Anything new from siblings?"** — Ask CoS to summarize the inbox.
+- **"I need to tell payments about X."** — Ask CoS to draft an outbox message. Review
+  it, then run `sync` to deliver.
+- **"I forgot what we decided about X."** — Ask CoS to search
+  `project-studio/registers/decisions.md` and, if relevant, the parent bus archive.
+- **"I want a different persona on this."** — Ask CoS to swap the active persona or
+  draft a per-module override for a shared persona.
+
+## Where to learn more
+
+- Parent architecture: parent's `CLAUDE.md` and
+  `.project-studio/shared/` directory listing.
+- Full v2.4 reference (if you have the Project Studio skill loaded):
+  `references/parent-architecture.md`, `references/parent-module-handoff.md`,
+  `references/module-communication.md`, `references/conflict-resolution.md`,
+  `references/classifier-rules.md`, `references/persona-schema.md` §scope.

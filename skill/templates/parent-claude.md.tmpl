@@ -1,0 +1,24 @@
+# {{PRODUCT_NAME}}
+
+> Multi-module product managed by Project Studio. Each module is a separate project.
+> This file is a data manifest — not a workflow config.
+
+## Modules
+
+| Module | Folder | Description | Status | Last updated |
+|--------|--------|-------------|--------|-------------|
+| {{MODULE_1_NAME}} | {{MODULE_1_FOLDER}}/ | {{MODULE_1_DESCRIPTION}} | {{MODULE_1_STATUS}} | {{MODULE_1_LAST_UPDATED}} |
+| {{MODULE_2_NAME}} | {{MODULE_2_FOLDER}}/ | {{MODULE_2_DESCRIPTION}} | {{MODULE_2_STATUS}} | {{MODULE_2_LAST_UPDATED}} |
+
+## Cross-module communication
+
+Modules communicate via inbox/outbox/bus messaging. Communication files live in `shared/`: `bus.md` (routed-message archive), `bus-routing.log`, and per-module outboxes `<module-slug>-outbox.md`. Each module has `project-studio/inbox.md` (received messages) and `project-studio/outbox-staging.md` (local draft queue). Routing is performed by the `sync` command from a parent session. See each module's `project-studio/references/module-communication.md` for the full protocol.
+
+## Rules for Claude
+
+If you are Claude reading this file:
+1. You are working on ONE module at a time. Check the module's own `CLAUDE.md` for all workflow instructions.
+2. You may read this file, `shared/bus.md`, and `shared/<module-slug>-outbox.md` ONLY during the resume security check (session start) or when running a `sync` command.
+3. You may NEVER read sibling module folders. If you are working on {{MODULE_1_NAME}}, you cannot read {{MODULE_2_FOLDER}}/ or any other module folder.
+4. You may NEVER write to this file or to `shared/` without explicit user permission. Writes to `shared/<module-slug>-outbox.md` require the user's "yes"; full routing (sync from outboxes into sibling inboxes) happens only from a parent session via the `sync` command.
+5. After the resume security check, work ENTIRELY inside {{MODULE_1_FOLDER}}/project-studio/ for the rest of the session. Parent access is closed.

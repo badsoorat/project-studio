@@ -1,0 +1,43 @@
+# Shared Service: {{SERVICE_NAME}}
+
+## Account
+
+- **Account ID:** {{ACCOUNT_IDENTIFIER — NOT a secret key}}
+- **Mode:** {{live | test | sandbox}}
+- **Dashboard:** {{DASHBOARD_URL}}
+- **Plan/tier:** {{PLAN_NAME_OR_UNKNOWN}}
+
+## Used By
+
+{{REPEAT_PER_MODULE}}
+- **{{MODULE_NAME}}** — {{WHAT_ITS_USED_FOR}}
+{{END_REPEAT}}
+
+## Key Resources
+
+> Important configuration, endpoints, or resources within this service.
+> No secrets — only identifiers and descriptions.
+
+{{FREE_TEXT — e.g., products, webhook endpoints, connected accounts, projects, workspaces}}
+
+## Env Var Names
+
+> Environment variable names (NOT values) that reference this service across modules.
+
+| Module | Env Var | Purpose |
+|--------|---------|---------|
+| {{MODULE}} | `{{ENV_VAR_NAME}}` | {{PURPOSE}} |
+
+## Constraints & Limits
+
+{{REPEAT_PER_CONSTRAINT}}
+- {{CONSTRAINT — e.g., "On free plan: 1M events/month", "Custom pricing — talk to AM before changes"}}
+{{END_REPEAT}}
+
+## Relevant Decisions
+
+{{DECISION_REFERENCES — e.g., "ADR-007: Chose Stripe over Paddle for multi-currency support"}}
+
+## Notes
+
+{{FREE_TEXT — anything else relevant about this service}}

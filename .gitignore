@@ -1,0 +1,40 @@
+# --- project-studio / cowork ephemera ---------------------------------
+# gstack-team + project-studio ephemera — never commit.
+.cowork/
+
+# Persona scratch directories that each session may populate under
+# .project-studio/persona-memory/<persona>/.scratch/ — these are local.
+.project-studio/persona-memory/*/.scratch/
+.project-studio/persona-memory/*/*.tmp
+
+# --- build artifacts ---------------------------------------------------
+# Release bundles — produced by release-track-a/b workflows, never
+# committed to the repo; only uploaded as workflow artifacts.
+dist/
+*.skill
+
+# --- eval artifacts ----------------------------------------------------
+# Ephemeral runner output. Scenario state of record lives in
+# upgrade-system/scenarios/ — not these files.
+upgrade-system/evals/.cache/
+upgrade-system/evals/runs/
+*.eval-log
+*.eval-report.json
+
+# --- python ------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- editors / OS ------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

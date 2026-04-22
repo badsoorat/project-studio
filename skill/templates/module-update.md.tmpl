@@ -1,0 +1,106 @@
+# Module Update Entry Template
+
+Each outbox message body follows this format. In v2.4, these entries are written to `project-studio/outbox-staging.md` (local drafts), then flushed to `~/parent/shared/<module-slug>-outbox.md` on user approval. The `sync` command routes them to sibling inboxes. Entries are append-only — never edit or delete previous entries. Keep only the last 10 entries in the active outbox; older entries rotate to `~/parent/.project-studio/archive/`.
+
+---
+
+## Entry Format
+
+```markdown
+## {{YYYY-MM-DD}} — {{SHORT_TITLE}}
+
+**Module:** {{MODULE_NAME}}
+**Category:** {{infrastructure | design-system | product-brief | other}}
+**Severity:** {{breaking — siblings must sync | informational — sync optional}}
+
+### What changed
+{{1-3 sentences describing the change}}
+
+### Before
+{{Previous state — specific values, not vague descriptions}}
+- Service: {{SERVICE_NAME}}
+- Account: {{account_id}}
+- Env vars: {{VAR_NAME_1}}, {{VAR_NAME_2}}
+
+### After
+{{New state — specific values}}
+- Service: {{SERVICE_NAME}}
+- Account: {{account_id}}
+- Env vars: {{VAR_NAME_1}}, {{VAR_NAME_2}}
+
+### Modules affected
+{{Which sibling modules should care about this change and why}}
+
+### Action required
+{{Specific instruction for syncing: "Update local shared/infrastructure.md auth section" or "No action needed — informational only"}}
+```
+
+---
+
+## Examples
+
+### Infrastructure Change (Breaking)
+
+```markdown
+## 2026-04-06 — Auth provider migration
+
+**Module:** Website
+**Category:** infrastructure
+**Severity:** breaking — siblings must sync
+
+### What changed
+User authentication provider migrated from WorkOS to Clerk. All login, signup, and session management now uses Clerk's SDK.
+
+### Before
+- Service: WorkOS
+- Account: org_abc123
+- Env vars: WORKOS_API_KEY, WORKOS_CLIENT_ID, WORKOS_REDIRECT_URI
+
+### After
+- Service: Clerk
+- Account: inst_xyz789
+- Env vars: CLERK_SECRET_KEY, CLERK_PUBLISHABLE_KEY, CLERK_WEBHOOK_SECRET
+
+### Modules affected
+- API: Uses auth tokens for API authentication — must validate Clerk JWTs instead of WorkOS tokens
+- Mobile App: Login flow calls auth endpoints — endpoint signatures may have changed
+
+### Action required
+Update local shared/infrastructure.md: replace WorkOS section with Clerk details. Review any auth-dependent code in your module.
+```
+
+### Design System Change (Informational)
+
+```markdown
+## 2026-04-05 — Primary color updated
+
+**Module:** Website
+**Category:** design-system
+**Severity:** informational — sync optional
+
+### What changed
+Primary brand color updated from blue-600 to indigo-600 across the design system.
+
+### Before
+- Primary: #2563EB (blue-600)
+
+### After
+- Primary: #4F46E5 (indigo-600)
+
+### Modules affected
+- Mobile App: If matching website colors, update primary color token
+- API: Not affected
+
+### Action required
+Update local shared/design-system.md primary color value if visual consistency with website is desired.
+```
+
+---
+
+## Rules
+
+1. **Never include secrets.** No API keys, tokens, or passwords. Only service names, account identifiers, and env var names.
+2. **Be specific.** "Changed auth" is useless. "Migrated from WorkOS (org_abc123) to Clerk (inst_xyz789)" is actionable.
+3. **Include before AND after.** Without both, siblings can't diff their local copy.
+4. **Severity matters.** "Breaking" means siblings' code may break without syncing. "Informational" means it's nice to know but nothing breaks.
+5. **Keep entries self-contained.** Each entry must make 

@@ -1,0 +1,32 @@
+# T2 — Structural tier.
+# Plan §3. Validates atom-map.yaml ↔ atoms/ coherence, scenario ↔ atom
+# linkage, schema conformance. Required check on `main`.
+
+name: T2 — structural
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  t2:
+    runs-on: ubuntu-latest
+    needs: []   # T2 is independent of T1 runs; both may run in parallel.
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml jsonschema
+
+      - name: Run T2 structural tier
+        run: |
+          python upgrade-system/evals/runner.py --tier T2
